@@ -1,0 +1,24 @@
+name: minecraft
+services:
+  minecraft:
+    image: itzg/minecraft-server:${JAVA_TAG:?Run install.sh first}
+    restart: unless-stopped
+    ports:
+      - "${BIND_ADDRESS:-0.0.0.0}:${SERVER_PORT:-25565}:25565"
+    environment:
+      EULA: "${EULA:?Accept the EULA in the installer}"
+      TYPE: VANILLA
+      VERSION: "${MC_VERSION:?Select a version in the installer}"
+      MEMORY: "${MEMORY:-2G}"
+      ONLINE_MODE: "TRUE"
+      ENABLE_RCON: "FALSE"
+    volumes:
+      - ./data/${MC_VERSION}:/data
+    stdin_open: true
+    tty: true
+    stop_grace_period: 2m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
